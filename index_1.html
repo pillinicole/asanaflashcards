@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Āsana Flashcards — Sanskrit pose names</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF0EA; --surface:#FBFCF8; --ink:#1F2E38; --muted:#5D6B72;
+  --line:#CBD2CB; --marigold:#C9821E; --marigold-soft:#F4E2C4;
+  --sage:#4E7A5E; --fig-near:#EADBC2; --fig-far:#C2B293; --fig-ink:#2B3A42; --sage-soft:#DCE8DF; --plum:#8A4566; --plum-soft:#F0DDE6;
+  --serif:"Gentium Book Plus","Noto Serif","Georgia",serif;
+  --sans:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#141C21; --surface:#1D282F; --ink:#E7ECE6; --muted:#9AA8AD;
+    --line:#33434B; --marigold:#E3A24A; --marigold-soft:#3A2E1C;
+    --sage:#7FB492; --fig-near:#B9C6C9; --fig-far:#7D8D93; --fig-ink:#0E1519; --sage-soft:#1F3328; --plum:#D28AAC; --plum-soft:#3A2230;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141C21; --surface:#1D282F; --ink:#E7ECE6; --muted:#9AA8AD;
+  --line:#33434B; --marigold:#E3A24A; --marigold-soft:#3A2E1C;
+  --sage:#7FB492; --fig-near:#B9C6C9; --fig-far:#7D8D93; --fig-ink:#0E1519; --sage-soft:#1F3328; --plum:#D28AAC; --plum-soft:#3A2230;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--marigold);outline-offset:3px}
+
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 48px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px;margin-bottom:22px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,6vw,2.75rem);line-height:1.1;margin:0;letter-spacing:-.01em}
+.tagline{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.stats{font-size:.9rem;color:var(--muted);text-align:right}
+.stats strong{color:var(--sage);font-weight:600}
+
+.controls{display:grid;gap:12px;margin-bottom:22px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:999px;font-size:.9rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.chip{flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 12px;font-size:.85rem;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--marigold);background:var(--marigold-soft);color:var(--ink)}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted);cursor:pointer}
+.toggle input{accent-color:var(--marigold);width:16px;height:16px}
+.spacer{flex:1}
+.link{border:0;background:none;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:3px;padding:4px}
+
+/* Card */
+.stage{perspective:1400px}
+.card{position:relative;width:100%;min-height:420px;border:0;padding:0;background:none;text-align:center;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px 24px;background:var(--surface);border:1px solid var(--line);border-radius:6px 28px 6px 28px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.back{transform:rotateY(180deg)}
+.cat{font-size:.8rem;color:var(--muted)}
+.big{font-family:var(--serif);font-size:clamp(2rem,7.5vw,3.4rem);line-height:1.1;margin:0;overflow-wrap:anywhere}
+.iast{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:1.1rem}
+.mid{font-family:var(--serif);font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.15;margin:0}
+.fig{width:min(100%,260px);height:auto;display:block}
+.fig polyline,.fig path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:7}
+.fig .near{stroke:var(--ink)} .fig .far{stroke:var(--muted);opacity:.55}
+.fig .floor{stroke:var(--line);stroke-width:2} .fig .head{fill:var(--surface);stroke:var(--ink);stroke-width:5}
+.fig.small{width:120px;margin-bottom:-6px}
+.art{display:block;width:min(100%,300px);max-height:250px;object-fit:contain;mix-blend-mode:multiply}
+.art.small{width:130px;max-height:110px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .art{filter:invert(.92);mix-blend-mode:screen}}
+:root[data-theme="dark"] .art{filter:invert(.92);mix-blend-mode:screen}
+.prompt{font-family:var(--serif);font-size:1.15rem;color:var(--muted);margin:0}
+.hint{position:absolute;bottom:14px;left:0;right:0;font-size:.8rem;color:var(--muted)}
+
+/* Roots: the signature element */
+.roots{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:4px 6px;margin-top:14px}
+.root{display:flex;flex-direction:column;align-items:center;min-width:3.5rem}
+.root b{font-family:var(--serif);font-weight:400;font-size:1.15rem;padding:0 4px 3px;border-bottom:2px solid var(--marigold)}
+.root span{font-size:.78rem;color:var(--muted);margin-top:4px;max-width:9rem;line-height:1.3}
+.plus{font-family:var(--serif);color:var(--marigold);font-size:1.15rem;padding-top:1px}
+
+.actions{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:10px;margin-top:18px;align-items:stretch}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;font-weight:500}
+.btn.learn{background:var(--plum-soft);border-color:transparent;color:var(--plum)}
+.btn.know{background:var(--sage-soft);border-color:transparent;color:var(--sage)}
+.btn.nav{width:48px;font-size:1.2rem;padding:0}
+.btn:disabled{opacity:.4;cursor:default}
+.progress{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-top:14px}
+.bar{height:4px;background:var(--line);border-radius:4px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sage);transition:width .3s}
+.keys{font-size:.8rem;color:var(--muted);margin-top:18px;text-align:center}
+kbd{font-family:var(--sans);font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface)}
+
+/* Quiz */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:6px 28px 6px 28px;padding:28px 22px;text-align:center}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.opt{border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:14px 12px;font-family:var(--serif);font-size:1.1rem;line-height:1.25}
+.opt.right{background:var(--sage-soft);border-color:var(--sage);color:var(--ink)}
+.opt.wrong{background:var(--plum-soft);border-color:var(--plum);color:var(--ink)}
+.opt:disabled{cursor:default}
+.feedback{min-height:1.5em;margin-top:16px;font-weight:500}
+.feedback.good{color:var(--sage)} .feedback.bad{color:var(--plum)}
+.next{margin-top:12px;background:var(--ink);color:var(--paper);border:0}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:6px 28px 6px 28px;padding:40px 24px;text-align:center}
+.empty p{margin:0 0 14px}
+footer{margin-top:36px;font-size:.8rem;color:var(--muted);text-align:center}
+
+@media (max-width:520px){
+  .options{grid-template-columns:1fr}
+  .actions{grid-template-columns:44px 1fr 1fr 44px}
+  .btn.nav{width:44px}
+  .stats{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){
+  .card{transition:none}
+  .bar i{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Āsana Flashcards</h1>
+      <p class="tagline">See the pose, say its Sanskrit name, then check yourself.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="controls">
+    <div class="row">
+      <div class="seg" role="group" aria-label="Pose set">
+        <button data-set="general" aria-pressed="true">All poses</button>
+        <button data-set="ashtanga" aria-pressed="false">Ashtanga</button>
+      </div>
+      <div class="seg" role="group" aria-label="Mode">
+        <button data-mode="cards" aria-pressed="true">Flashcards</button>
+        <button data-mode="quiz" aria-pressed="false">Quiz</button>
+      </div>
+      <div class="seg" role="group" aria-label="Show first">
+        <button data-dir="pose" aria-pressed="true">Drawing first</button>
+        <button data-dir="sa" aria-pressed="false">Sanskrit first</button>
+        <button data-dir="en" aria-pressed="false">English first</button>
+      </div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Pose family"></div>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="onlyLearning"> Only poses I'm still learning</label>
+      <span class="spacer"></span>
+      <button class="link" id="shuffle">Shuffle</button>
+      <button class="link" id="reset">Reset progress</button>
+    </div>
+  </div>
+
+  <main id="main"></main>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const POSES = [
+  // Standing
+  {s:"Tadasana",i:"Tāḍāsana",e:"Mountain Pose",c:"Standing",r:[["tāḍa","mountain"]]},
+  {s:"Vrksasana",i:"Vṛkṣāsana",e:"Tree Pose",c:"Standing",r:[["vṛkṣa","tree"]]},
+  {s:"Utkatasana",i:"Utkaṭāsana",e:"Chair Pose",c:"Standing",r:[["utkaṭa","fierce, powerful"]]},
+  {s:"Uttanasana",i:"Uttānāsana",e:"Standing Forward Fold",c:"Standing",r:[["ut","intense"],["tāna","stretch"]]},
+  {s:"Virabhadrasana I",i:"Vīrabhadrāsana I",e:"Warrior I",c:"Standing",r:[["vīrabhadra","fierce warrior, a form of Shiva"]]},
+  {s:"Virabhadrasana II",i:"Vīrabhadrāsana II",e:"Warrior II",c:"Standing",r:[["vīrabhadra","fierce warrior, a form of Shiva"]]},
+  {s:"Virabhadrasana III",i:"Vīrabhadrāsana III",e:"Warrior III",c:"Standing",r:[["vīrabhadra","fierce warrior, a form of Shiva"]]},
+  {s:"Trikonasana",i:"Trikoṇāsana",e:"Triangle Pose",c:"Standing",r:[["tri","three"],["koṇa","angle"]]},
+  {s:"Parivrtta Trikonasana",i:"Parivṛtta Trikoṇāsana",e:"Revolved Triangle",c:"Standing",r:[["parivṛtta","revolved"],["tri","three"],["koṇa","angle"]]},
+  {s:"Utthita Parsvakonasana",i:"Utthita Pārśvakoṇāsana",e:"Extended Side Angle",c:"Standing",r:[["utthita","extended"],["pārśva","side"],["koṇa","angle"]]},
+  {s:"Ardha Chandrasana",i:"Ardha Candrāsana",e:"Half Moon",c:"Standing",r:[["ardha","half"],["candra","moon"]]},
+  {s:"Garudasana",i:"Garuḍāsana",e:"Eagle Pose",c:"Standing",r:[["garuḍa","eagle, king of birds"]]},
+  {s:"Natarajasana",i:"Naṭarājāsana",e:"Dancer Pose",c:"Standing",r:[["naṭa","dancer"],["rāja","king"]]},
+  {s:"Parsvottanasana",i:"Pārśvottānāsana",e:"Pyramid Pose (Intense Side Stretch)",c:"Standing",r:[["pārśva","side"],["ut","intense"],["tāna","stretch"]]},
+  {s:"Prasarita Padottanasana",i:"Prasārita Pādottānāsana",e:"Wide-Legged Forward Fold",c:"Standing",r:[["prasārita","spread out"],["pāda","foot"],["ut","intense"],["tāna","stretch"]]},
+  {s:"Malasana",i:"Mālāsana",e:"Garland Pose (Squat)",c:"Standing",r:[["mālā","garland"]]},
+  // Seated
+  {s:"Sukhasana",i:"Sukhāsana",e:"Easy Pose",c:"Seated",r:[["sukha","ease, comfort"]]},
+  {s:"Padmasana",i:"Padmāsana",e:"Lotus Pose",c:"Seated",r:[["padma","lotus"]]},
+  {s:"Dandasana",i:"Daṇḍāsana",e:"Staff Pose",c:"Seated",r:[["daṇḍa","staff, stick"]]},
+  {s:"Paschimottanasana",i:"Paścimottānāsana",e:"Seated Forward Fold",c:"Seated",r:[["paścima","west, the back of the body"],["ut","intense"],["tāna","stretch"]]},
+  {s:"Baddha Konasana",i:"Baddha Koṇāsana",e:"Bound Angle (Butterfly)",c:"Seated",r:[["baddha","bound"],["koṇa","angle"]]},
+  {s:"Janu Sirsasana",i:"Jānu Śīrṣāsana",e:"Head-to-Knee Pose",c:"Seated",r:[["jānu","knee"],["śīrṣa","head"]]},
+  {s:"Upavistha Konasana",i:"Upaviṣṭha Koṇāsana",e:"Wide-Angle Seated Forward Fold",c:"Seated",r:[["upaviṣṭha","seated"],["koṇa","angle"]]},
+  {s:"Gomukhasana",i:"Gomukhāsana",e:"Cow Face Pose",c:"Seated",r:[["go","cow"],["mukha","face"]]},
+  {s:"Ardha Matsyendrasana",i:"Ardha Matsyendrāsana",e:"Half Lord of the Fishes",c:"Seated",r:[["ardha","half"],["matsya","fish"],["indra","lord"]]},
+  {s:"Navasana",i:"Nāvāsana",e:"Boat Pose",c:"Seated",r:[["nāvā","boat"]]},
+  {s:"Eka Pada Rajakapotasana",i:"Eka Pāda Rājakapotāsana",e:"Pigeon (One-Legged King Pigeon)",c:"Seated",r:[["eka","one"],["pāda","foot, leg"],["rāja","king"],["kapota","pigeon"]]},
+  {s:"Hanumanasana",i:"Hanumānāsana",e:"Splits (Monkey God Pose)",c:"Seated",r:[["hanumān","the monkey god"]]},
+  // Floor & vinyasa
+  {s:"Balasana",i:"Bālāsana",e:"Child's Pose",c:"Floor & vinyasa",r:[["bāla","child"]]},
+  {s:"Marjaryasana",i:"Mārjaryāsana",e:"Cat Pose",c:"Floor & vinyasa",r:[["mārjarī","cat"]]},
+  {s:"Bitilasana",i:"Bitilāsana",e:"Cow Pose",c:"Floor & vinyasa",r:[["bitila","cow"]]},
+  {s:"Anjaneyasana",i:"Añjaneyāsana",e:"Low Lunge",c:"Floor & vinyasa",r:[["āñjaneya","Hanuman, son of Añjanā"]]},
+  {s:"Phalakasana",i:"Phalakāsana",e:"Plank Pose",c:"Floor & vinyasa",r:[["phalaka","plank, board"]]},
+  {s:"Chaturanga Dandasana",i:"Caturaṅga Daṇḍāsana",e:"Four-Limbed Staff Pose",c:"Floor & vinyasa",r:[["catur","four"],["aṅga","limb"],["daṇḍa","staff"]]},
+  {s:"Adho Mukha Svanasana",i:"Adho Mukha Śvānāsana",e:"Downward-Facing Dog",c:"Floor & vinyasa",r:[["adho","downward"],["mukha","face"],["śvāna","dog"]]},
+  // Backbends
+  {s:"Bhujangasana",i:"Bhujaṅgāsana",e:"Cobra Pose",c:"Backbends",r:[["bhujaṅga","serpent, cobra"]]},
+  {s:"Urdhva Mukha Svanasana",i:"Ūrdhva Mukha Śvānāsana",e:"Upward-Facing Dog",c:"Backbends",r:[["ūrdhva","upward"],["mukha","face"],["śvāna","dog"]]},
+  {s:"Salabhasana",i:"Śalabhāsana",e:"Locust Pose",c:"Backbends",r:[["śalabha","locust"]]},
+  {s:"Dhanurasana",i:"Dhanurāsana",e:"Bow Pose",c:"Backbends",r:[["dhanu","bow"]]},
+  {s:"Ustrasana",i:"Uṣṭrāsana",e:"Camel Pose",c:"Backbends",r:[["uṣṭra","camel"]]},
+  {s:"Setu Bandha Sarvangasana",i:"Setu Bandha Sarvāṅgāsana",e:"Bridge Pose",c:"Backbends",r:[["setu","bridge"],["bandha","lock, bind"],["sarva","all"],["aṅga","limb"]]},
+  {s:"Urdhva Dhanurasana",i:"Ūrdhva Dhanurāsana",e:"Wheel (Upward Bow)",c:"Backbends",r:[["ūrdhva","upward"],["dhanu","bow"]]},
+  {s:"Matsyasana",i:"Matsyāsana",e:"Fish Pose",c:"Backbends",r:[["matsya","fish"]]},
+  // Inversions & arm balances
+  {s:"Sirsasana",i:"Śīrṣāsana",e:"Headstand",c:"Inversions & balances",r:[["śīrṣa","head"]]},
+  {s:"Salamba Sarvangasana",i:"Sālamba Sarvāṅgāsana",e:"Supported Shoulder Stand",c:"Inversions & balances",r:[["sālamba","supported"],["sarva","all"],["aṅga","limb"]]},
+  {s:"Halasana",i:"Halāsana",e:"Plow Pose",c:"Inversions & balances",r:[["hala","plow"]]},
+  {s:"Pincha Mayurasana",i:"Piñcha Mayūrāsana",e:"Forearm Stand",c:"Inversions & balances",r:[["piñcha","feather"],["mayūra","peacock"]]},
+  {s:"Adho Mukha Vrksasana",i:"Adho Mukha Vṛkṣāsana",e:"Handstand",c:"Inversions & balances",r:[["adho","downward"],["mukha","face"],["vṛkṣa","tree"]]},
+  {s:"Bakasana",i:"Bakāsana",e:"Crow (Crane) Pose",c:"Inversions & balances",r:[["baka","crane"]]},
+  {s:"Vasisthasana",i:"Vasiṣṭhāsana",e:"Side Plank",c:"Inversions & balances",r:[["vasiṣṭha","a revered sage"]]},
+  // Restorative
+  {s:"Savasana",i:"Śavāsana",e:"Corpse Pose",c:"Restorative",r:[["śava","corpse"]]},
+  {s:"Ananda Balasana",i:"Ānanda Bālāsana",e:"Happy Baby",c:"Restorative",r:[["ānanda","bliss"],["bāla","child"]]},
+  {s:"Supta Baddha Konasana",i:"Supta Baddha Koṇāsana",e:"Reclining Bound Angle",c:"Restorative",r:[["supta","reclining"],["baddha","bound"],["koṇa","angle"]]},
+  {s:"Viparita Karani",i:"Viparīta Karaṇī",e:"Legs Up the Wall",c:"Restorative",r:[["viparīta","inverted"],["karaṇī","action, doing"]],noAsana:true},
+];
+POSES.forEach(p=>{p.f=p.s; p.v=""; if(!p.noAsana) p.r=[...p.r,["āsana","pose, seat"]];});
+// Order: head, neck, pelvis, farElbow, farHand, nearElbow, nearHand, farKnee, farFoot, nearKnee, nearFoot
+const FIGS = {
+"Tadasana":{p:[[100,30],[100,46],[100,98],[86,74],[82,100],[114,74],[118,100],[93,138],[92,178],[107,138],[108,178]]},
+"Vrksasana":{p:[[100,34],[100,50],[100,102],[86,30],[100,8],[114,30],[100,8],[98,140],[98,178],[134,128],[104,122]]},
+"Utkatasana":{p:[[120,70],[110,84],[86,128],[118,58],[128,34],[124,60],[136,36],[124,150],[96,178],[128,148],[102,178]]},
+"Uttanasana":{c:[124,112],p:[[124,164],[120,148],[100,102],[120,164],[122,178],[126,164],[128,178],[98,140],[98,178],[102,140],[102,178]]},
+"Virabhadrasana I":{p:[[106,62],[106,78],[106,128],[102,52],[102,26],[110,52],[112,26],[78,152],[50,178],[140,138],[140,178]]},
+"Virabhadrasana II":{p:[[108,62],[100,78],[100,128],[74,80],[48,80],[126,80],[152,80],[72,152],[46,178],[134,138],[138,178]]},
+"Virabhadrasana III":{p:[[146,100],[130,104],[80,106],[152,98],[176,94],[154,104],[178,102],[46,106],[14,104],[80,142],[80,178]]},
+"Trikonasana":{p:[[162,96],[148,102],[100,108],[147,76],[146,50],[149,126],[150,150],[74,142],[50,178],[126,142],[150,178]]},
+"Parivrtta Trikonasana":{p:[[160,112],[148,106],[100,104],[152,136],[160,170],[146,80],[144,54],[74,142],[50,178],[126,140],[150,178]]},
+"Utthita Parsvakonasana":{p:[[160,98],[146,106],[104,130],[166,90],[186,74],[150,132],[154,160],[74,152],[44,178],[138,140],[140,178]]},
+"Ardha Chandrasana":{p:[[176,104],[160,108],[110,106],[160,82],[160,56],[160,134],[160,168],[76,104],[42,102],[110,142],[110,178]]},
+"Garudasana":{p:[[100,40],[100,56],[100,108],[100,82],[106,58],[98,78],[94,56],[98,144],[96,178],[90,136],[108,160]]},
+"Natarajasana":{p:[[150,76],[136,86],[96,106],[96,78],[60,80],[160,72],[184,58],[66,116],[56,80],[96,142],[96,178]]},
+"Parsvottanasana":{p:[[164,150],[152,138],[110,108],[150,160],[148,178],[156,160],[154,178],[90,143],[70,178],[126,143],[142,178]]},
+"Prasarita Padottanasana":{p:[[100,168],[100,154],[100,104],[86,166],[80,178],[114,166],[120,178],[78,142],[56,178],[122,142],[144,178]]},
+"Malasana":{p:[[100,96],[100,112],[100,160],[80,132],[100,126],[120,132],[100,126],[66,150],[82,178],[134,150],[118,178]]},
+"Sukhasana":{p:[[100,102],[100,118],[100,168],[76,146],[68,166],[124,146],[132,166],[66,170],[112,176],[134,170],[88,176]]},
+"Padmasana":{p:[[100,102],[100,118],[100,168],[76,146],[68,166],[124,146],[132,166],[66,170],[120,158],[134,170],[80,158]]},
+"Dandasana":{p:[[70,104],[70,120],[70,170],[72,146],[76,170],[74,146],[80,170],[104,172],[140,172],[106,172],[142,172]]},
+"Paschimottanasana":{p:[[130,146],[114,150],[70,170],[124,158],[140,166],[128,160],[144,168],[104,172],[140,172],[106,172],[142,172]]},
+"Baddha Konasana":{p:[[100,102],[100,118],[100,168],[90,146],[98,172],[110,146],[102,172],[64,164],[98,174],[136,164],[102,174]]},
+"Janu Sirsasana":{p:[[130,146],[114,150],[70,170],[124,158],[140,166],[128,160],[144,168],[86,160],[98,172],[106,172],[142,172]]},
+"Upavistha Konasana":{p:[[100,122],[100,138],[100,168],[80,150],[60,170],[120,150],[140,170],[66,172],[32,174],[134,172],[168,174]]},
+"Gomukhasana":{p:[[100,102],[100,118],[100,166],[86,140],[102,126],[114,88],[104,122],[98,156],[130,172],[104,150],[70,172]]},
+"Ardha Matsyendrasana":{p:[[94,102],[100,118],[100,168],[118,134],[120,110],[76,146],[70,172],[130,172],[80,174],[110,132],[82,172]]},
+"Navasana":{p:[[56,108],[60,124],[80,168],[84,126],[108,126],[86,130],[110,130],[102,141],[126,116],[106,145],[130,120]]},
+"Eka Pada Rajakapotasana":{p:[[104,94],[102,110],[100,160],[104,136],[108,170],[108,136],[114,170],[66,172],[30,174],[130,172],[96,174]]},
+"Hanumanasana":{p:[[100,104],[100,120],[100,170],[108,96],[110,72],[112,96],[114,72],[64,172],[28,172],[136,172],[172,172]]},
+"Balasana":{p:[[134,166],[120,166],[72,152],[146,172],[170,174],[148,174],[172,176],[98,172],[64,176],[100,172],[66,176]]},
+"Marjaryasana":{c:[100,104],p:[[138,154],[130,138],[70,136],[128,158],[128,176],[132,158],[132,176],[68,176],[38,176],[72,176],[42,176]]},
+"Bitilasana":{c:[100,154],p:[[142,118],[130,134],[70,134],[128,156],[128,176],[132,156],[132,176],[68,176],[38,176],[72,176],[42,176]]},
+"Anjaneyasana":{p:[[102,74],[100,90],[98,140],[104,64],[106,40],[110,64],[112,40],[64,172],[30,176],[132,142],[130,176]]},
+"Phalakasana":{p:[[164,118],[150,124],[98,148],[146,148],[146,172],[150,148],[150,172],[68,160],[38,172],[72,160],[42,172]]},
+"Chaturanga Dandasana":{p:[[164,148],[150,152],[100,158],[134,164],[140,176],[138,164],[144,176],[70,164],[38,170],[74,164],[42,170]]},
+"Adho Mukha Svanasana":{p:[[132,140],[126,124],[96,74],[134,150],[146,176],[138,150],[150,176],[76,125],[58,176],[80,125],[62,176]]},
+"Bhujangasana":{c:[126,162],p:[[148,118],[136,132],[96,174],[130,156],[126,176],[134,156],[130,176],[60,176],[28,176],[64,176],[32,176]]},
+"Urdhva Mukha Svanasana":{c:[126,150],p:[[148,98],[136,112],[94,160],[132,144],[132,176],[136,144],[136,176],[60,168],[28,176],[64,168],[32,176]]},
+"Salabhasana":{c:[118,180],p:[[154,148],[140,160],[96,174],[116,160],[94,154],[120,158],[98,152],[60,164],[28,148],[64,164],[32,150]]},
+"Dhanurasana":{c:[112,178],p:[[144,128],[130,140],[90,170],[96,126],[64,116],[100,130],[68,118],[58,160],[62,116],[62,160],[66,118]]},
+"Ustrasana":{c:[124,98],p:[[66,108],[80,96],[112,130],[74,134],[72,172],[78,134],[76,172],[106,176],[72,176],[110,176],[76,176]]},
+"Setu Bandha Sarvangasana":{p:[[30,166],[46,168],[100,128],[68,176],[96,176],[72,176],[100,176],[132,132],[130,176],[136,132],[134,176]]},
+"Urdhva Dhanurasana":{c:[80,80],p:[[46,142],[56,124],[112,104],[44,150],[38,176],[48,150],[42,176],[136,132],[132,176],[140,132],[136,176]]},
+"Matsyasana":{c:[80,140],p:[[44,166],[58,152],[102,174],[82,176],[100,176],[86,176],[104,176],[134,176],[168,176],[138,176],[172,176]]},
+"Sirsasana":{p:[[100,166],[100,150],[100,100],[122,176],[102,176],[126,176],[106,176],[98,64],[98,26],[102,64],[102,26]]},
+"Salamba Sarvangasana":{p:[[112,170],[96,168],[96,118],[70,174],[88,140],[74,174],[92,140],[94,80],[94,42],[98,80],[98,42]]},
+"Halasana":{p:[[112,170],[96,168],[96,118],[70,176],[44,176],[74,176],[48,176],[124,148],[150,176],[126,148],[152,176]]},
+"Pincha Mayurasana":{p:[[116,156],[100,148],[100,98],[98,176],[128,176],[102,176],[132,176],[98,62],[98,24],[102,62],[102,24]]},
+"Adho Mukha Vrksasana":{p:[[110,138],[100,124],[100,74],[98,150],[98,176],[102,150],[102,176],[98,38],[98,4],[102,38],[102,4]]},
+"Bakasana":{p:[[138,128],[122,122],[80,112],[108,148],[112,176],[112,150],[116,176],[100,136],[72,130],[104,138],[76,132]]},
+"Vasisthasana":{p:[[160,110],[146,118],[98,144],[146,92],[144,64],[148,146],[150,172],[62,158],[28,172],[66,158],[32,172]]},
+"Savasana":{p:[[30,166],[46,168],[96,172],[70,176],[94,176],[72,176],[96,176],[132,174],[168,174],[134,174],[170,174]]},
+"Ananda Balasana":{p:[[36,166],[52,168],[100,172],[62,134],[78,106],[66,134],[82,106],[76,142],[78,106],[80,142],[82,106]]},
+"Supta Baddha Konasana":{p:[[30,166],[46,168],[96,172],[66,176],[84,176],[70,176],[88,176],[118,150],[110,174],[122,148],[112,174]]},
+"Viparita Karani":{wall:152,p:[[82,168],[98,170],[144,172],[114,176],[132,176],[116,176],[134,176],[142,134],[142,96],[146,134],[146,96]]},
+};
+function figureSVG(name){
+  const f=FIGS[name]; if(!f) return "";
+  const [h,n,p,le,lh,re,rh,lk,lf,rk,rf]=f.p;
+  const L=(pts,cls)=>`<polyline class="${cls}" points="${pts.map(q=>q.join(",")).join(" ")}"/>`;
+  const torso = f.c ? `<path class="near" d="M${n} Q${f.c} ${p}"/>` : L([n,p],"near");
+  return `<svg class="fig" viewBox="0 0 200 190" role="img" aria-label="Drawing of the pose">
+    <line class="floor" x1="6" y1="182" x2="194" y2="182"/>
+    ${f.wall?`<line class="floor" x1="${f.wall}" y1="60" x2="${f.wall}" y2="182"/>`:""}
+    ${L([n,le,lh],"far")}${L([p,lk,lf],"far")}
+    ${torso}
+    ${L([p,rk,rf],"near")}${L([n,re,rh],"near")}
+    <circle class="head" cx="${h[0]}" cy="${h[1]}" r="11"/>
+  </svg>`;
+}
+
+
+Object.assign(FIGS, {
+"Padangusthasana":{c:[118,110],p:[[112,160],[114,146],[100,102],[110,162],[108,178],[114,162],[112,178],[98,140],[98,178],[102,140],[102,178]]},
+"Pada Hastasana":{c:[118,110],p:[[112,160],[114,146],[100,102],[124,166],[104,180],[128,168],[108,180],[98,140],[98,178],[102,140],[102,178]]},
+"Parivrtta Parsvakonasana":{p:[[158,92],[146,106],[104,130],[148,136],[152,176],[166,90],[186,74],[74,152],[44,178],[138,140],[140,178]]},
+"Utthita Hasta Padangusthasana":{p:[[96,34],[96,50],[96,102],[84,74],[92,100],[130,78],[162,100],[96,140],[96,178],[130,104],[164,104]]},
+"Ardha Baddha Padmottanasana":{c:[122,112],p:[[122,162],[118,148],[100,102],[118,162],[120,178],[104,128],[100,110],[100,140],[100,178],[108,138],[102,110]]},
+"Purvottanasana":{p:[[46,136],[60,126],[110,151],[60,150],[60,176],[64,150],[64,176],[135,163],[160,176],[137,165],[162,176]]},
+"Ardha Baddha Padma Paschimottanasana":{p:[[130,146],[114,150],[70,170],[94,132],[80,152],[128,160],[144,168],[100,166],[82,158],[106,172],[142,172]]},
+"Tiriang Mukha Eka Pada Paschimottanasana":{p:[[130,146],[114,150],[70,170],[124,158],[140,166],[128,160],[144,168],[98,172],[64,176],[106,172],[142,172]]},
+"Marichyasana A":{p:[[130,146],[114,150],[70,170],[94,146],[72,150],[128,160],[144,168],[86,136],[90,174],[106,172],[142,172]]},
+"Marichyasana B":{p:[[122,152],[108,150],[70,168],[96,146],[82,138],[98,150],[84,142],[86,134],[90,174],[110,172],[84,166]]},
+"Marichyasana C":{p:[[62,104],[70,120],[70,170],[54,140],[52,166],[92,138],[78,156],[92,136],[84,174],[106,172],[142,172]]},
+"Marichyasana D":{p:[[62,104],[70,120],[70,170],[54,140],[52,166],[92,138],[78,156],[92,136],[84,174],[110,172],[84,166]]},
+"Bhujapidasana":{p:[[124,148],[110,138],[80,128],[98,156],[100,176],[102,156],[104,176],[120,124],[136,156],[124,126],[140,158]]},
+"Kurmasana":{p:[[132,172],[118,174],[70,172],[96,178],[76,178],[100,178],[80,178],[110,154],[150,168],[114,156],[154,170]]},
+"Supta Kurmasana":{p:[[128,170],[112,172],[70,170],[96,160],[80,150],[98,162],[82,152],[94,140],[126,150],[98,142],[130,152]]},
+"Garbha Pindasana":{p:[[86,104],[78,120],[80,170],[96,130],[92,108],[100,132],[96,108],[104,128],[90,140],[108,130],[94,142]]},
+"Kukkutasana":{p:[[100,86],[96,102],[90,150],[98,138],[100,176],[102,138],[104,176],[112,140],[92,146],[116,142],[96,148]]},
+"Supta Konasana":{p:[[112,170],[96,168],[96,118],[120,152],[146,176],[124,152],[150,176],[124,148],[150,176],[126,148],[152,176]]},
+"Supta Padangusthasana":{p:[[30,166],[46,168],[96,172],[70,176],[96,176],[70,136],[102,104],[132,174],[168,174],[100,136],[104,100]]},
+"Ubhaya Padangusthasana":{p:[[60,110],[66,126],[90,170],[88,112],[112,102],[90,110],[114,100],[102,136],[114,102],[104,136],[116,100]]},
+"Urdhva Mukha Paschimottanasana":{p:[[112,106],[102,120],[86,170],[114,114],[124,98],[116,112],[126,96],[106,134],[124,98],[108,134],[126,96]]},
+"Setu Bandhasana":{c:[74,120],p:[[40,168],[52,154],[104,132],[66,140],[76,128],[70,142],[80,128],[128,150],[150,176],[132,152],[154,176]]},
+"Karnapidasana":{p:[[112,170],[96,168],[96,118],[70,176],[44,176],[74,176],[48,176],[118,158],[150,176],[120,160],[152,176]]},
+"Urdhva Padmasana":{p:[[112,170],[96,168],[96,118],[104,136],[112,106],[108,134],[116,104],[114,100],[96,94],[118,102],[100,96]]},
+"Pindasana":{p:[[112,170],[96,168],[96,120],[108,150],[118,130],[112,150],[122,128],[124,140],[104,128],[126,142],[106,130]]},
+"Uttana Padasana":{c:[80,140],p:[[44,166],[58,152],[102,174],[82,138],[108,122],[86,136],[112,120],[132,156],[162,138],[134,158],[164,140]]},
+"Baddha Padmasana":{p:[[100,102],[100,118],[100,168],[70,140],[90,166],[130,140],[110,166],[66,170],[120,158],[134,170],[80,158]]},
+"Yoga Mudra":{p:[[126,166],[112,160],[70,170],[96,140],[76,158],[100,142],[80,160],[100,170],[84,162],[104,172],[88,164]]},
+"Utpluthih":{p:[[100,74],[100,90],[100,140],[86,134],[78,176],[114,134],[122,176],[66,142],[120,132],[134,142],[80,132]]},
+"Pasasana":{p:[[104,94],[98,110],[90,160],[78,134],[98,168],[126,126],[110,158],[124,138],[98,176],[128,140],[102,176]]},
+"Krounchasana":{p:[[92,110],[80,124],[70,170],[98,110],[116,100],[100,108],[120,100],[98,172],[64,176],[96,136],[122,100]]},
+"Bhekasana":{p:[[144,136],[130,146],[90,172],[104,130],[78,148],[108,132],[82,150],[56,170],[74,148],[60,170],[78,150]]},
+"Parsva Dhanurasana":{c:[110,174],p:[[144,150],[130,158],[90,166],[98,124],[64,120],[102,126],[68,122],[58,160],[64,120],[62,160],[68,122]]},
+"Laghu Vajrasana":{c:[120,88],p:[[66,166],[74,150],[112,132],[72,164],[78,176],[76,164],[82,176],[106,176],[72,176],[110,176],[76,176]]},
+"Kapotasana":{c:[126,74],p:[[68,164],[80,142],[114,130],[56,176],[78,176],[60,176],[82,176],[106,176],[74,176],[110,176],[78,176]]},
+"Supta Vajrasana":{c:[80,118],p:[[44,166],[56,150],[104,166],[78,154],[106,162],[82,156],[110,162],[126,170],[106,160],[130,170],[110,162]]},
+"Bharadvajasana":{p:[[70,104],[80,120],[80,170],[62,144],[74,164],[98,146],[110,166],[110,170],[90,164],[112,174],[78,176]]},
+"Eka Pada Sirsasana":{p:[[114,120],[102,130],[80,170],[116,150],[120,132],[118,152],[122,134],[116,172],[152,172],[104,106],[94,112]]},
+"Dwi Pada Sirsasana":{p:[[116,112],[104,120],[84,150],[100,150],[100,176],[104,150],[104,176],[98,96],[90,104],[102,98],[94,106]]},
+"Yoganidrasana":{p:[[54,160],[66,170],[110,176],[86,152],[100,170],[90,154],[104,172],[62,136],[50,148],[66,138],[54,150]]},
+"Tittibhasana":{p:[[128,148],[112,140],[88,130],[108,158],[106,176],[112,158],[110,176],[122,116],[156,102],[126,118],[160,104]]},
+"Karandavasana":{p:[[114,160],[100,150],[96,100],[98,176],[126,176],[102,176],[130,176],[118,128],[104,116],[122,130],[108,118]]},
+"Mayurasana":{p:[[146,140],[132,144],[80,150],[98,152],[96,176],[102,152],[100,176],[48,148],[16,146],[50,150],[18,148]]},
+"Vatayanasana":{p:[[100,68],[100,84],[100,134],[108,98],[102,72],[112,96],[106,70],[128,140],[126,176],[100,176],[112,136]]},
+"Parighasana":{p:[[156,152],[142,146],[100,170],[158,126],[176,156],[160,166],[172,172],[70,170],[82,176],[134,172],[170,172]]},
+"Supta Urdhva Pada Vajrasana":{p:[[80,104],[86,120],[96,168],[66,140],[80,164],[118,142],[108,166],[62,164],[118,158],[132,172],[80,156]]},
+"Mukta Hasta Sirsasana":{p:[[100,166],[100,150],[100,100],[126,168],[154,176],[130,168],[158,176],[98,64],[98,26],[102,64],[102,26]]},
+"Baddha Hasta Sirsasana":{p:[[100,166],[100,150],[100,100],[78,176],[110,176],[124,176],[90,176],[98,64],[98,26],[102,64],[102,26]]},
+"Vasisthasana B":{p:[[160,110],[146,118],[98,144],[118,98],[92,78],[148,146],[150,172],[92,110],[88,76],[66,158],[32,172]]},
+"Visvamitrasana":{p:[[124,138],[110,128],[84,140],[132,100],[148,86],[116,156],[118,176],[60,158],[32,176],[118,112],[150,84]]},
+"Kasyapasana":{p:[[160,110],[146,118],[98,144],[122,136],[96,150],[148,146],[150,172],[84,118],[70,150],[66,158],[32,172]]},
+"Chakorasana":{p:[[120,110],[108,118],[90,150],[100,148],[96,176],[104,148],[100,176],[84,110],[80,70],[104,96],[98,102]]},
+"Bhairavasana":{p:[[38,160],[52,166],[100,174],[76,150],[66,134],[80,152],[70,136],[136,176],[172,176],[56,138],[42,150]]},
+"Skandasana":{p:[[130,150],[116,150],[70,170],[128,160],[144,166],[130,162],[146,168],[104,172],[140,172],[124,128],[112,136]]},
+"Durvasasana":{p:[[100,34],[100,50],[100,102],[118,78],[108,70],[120,80],[110,72],[100,140],[100,178],[112,48],[92,56]]},
+"Urdhva Kukkutasana":{p:[[140,128],[124,124],[80,120],[108,150],[110,176],[112,150],[114,176],[110,142],[94,132],[114,144],[98,134]]},
+"Galavasana":{p:[[142,134],[126,130],[84,124],[108,150],[110,176],[112,150],[114,176],[50,112],[16,100],[116,140],[110,148]]},
+"Eka Pada Bakasana":{p:[[138,128],[122,122],[80,112],[108,148],[112,176],[112,150],[116,176],[48,110],[14,104],[104,138],[76,132]]},
+"Koundinyasana":{p:[[146,146],[130,150],[86,148],[106,154],[110,176],[110,154],[114,176],[52,146],[18,144],[126,140],[166,132]]},
+"Astavakrasana":{p:[[134,150],[118,150],[80,148],[92,156],[90,176],[110,156],[110,176],[112,140],[150,132],[114,142],[152,134]]},
+"Purna Matsyendrasana":{p:[[94,102],[100,118],[100,168],[118,134],[120,110],[76,146],[70,172],[130,172],[102,160],[110,132],[82,172]]},
+"Viranchyasana":{p:[[104,104],[100,120],[94,170],[114,148],[110,128],[118,150],[114,130],[128,170],[104,162],[112,100],[96,106]]},
+"Viparita Dandasana":{c:[86,96],p:[[50,166],[60,150],[110,110],[38,176],[56,176],[42,176],[60,176],[134,142],[160,176],[136,144],[162,176]]},
+"Eka Pada Viparita Dandasana":{c:[86,96],p:[[50,166],[60,150],[110,110],[38,176],[56,176],[42,176],[60,176],[134,142],[160,176],[118,74],[126,38]]},
+"Viparita Salabhasana":{c:[112,132],p:[[140,170],[126,170],[118,108],[100,176],[76,176],[104,176],[80,176],[128,76],[150,58],[132,78],[154,60]]},
+"Ganda Bherundasana":{c:[112,132],p:[[140,170],[126,170],[118,108],[112,152],[116,176],[116,152],[120,176],[150,118],[160,176],[154,120],[164,176]]},
+"Supta Trivikramasana":{p:[[38,160],[52,166],[100,174],[46,134],[52,100],[50,136],[56,100],[136,176],[172,176],[84,128],[54,96]]},
+"Trivikramasana":{p:[[88,40],[98,52],[100,102],[104,40],[112,28],[106,42],[114,30],[100,140],[100,178],[106,64],[114,26]]},
+"Raja Kapotasana":{c:[132,150],p:[[98,100],[114,104],[100,172],[86,94],[70,118],[90,96],[74,120],[66,174],[70,120],[70,174],[74,122]]},
+"Eka Pada Raja Kapotasana":{p:[[104,92],[102,108],[100,160],[106,82],[90,98],[110,84],[94,100],[62,172],[88,100],[130,172],[96,174]]},
+});
+
+const R_ = {
+  utthita:["utthita","extended"], parivrtta:["parivṛtta","revolved"], tri:["tri","three"], kona:["koṇa","angle"], parsva:["pārśva","side"],
+  pada:["pāda","foot, leg"], angustha:["aṅguṣṭha","big toe"], hasta:["hasta","hand"], ardha:["ardha","half"], baddha:["baddha","bound"],
+  padma:["padma","lotus"], ut:["ut","intense"], tana:["tāna","stretch"], paschima:["paścima","west, the back of the body"],
+  supta:["supta","reclining"], urdhva:["ūrdhva","upward"], mukha:["mukha","face"], eka:["eka","one"], sirsa:["śīrṣa","head"],
+  viparita:["viparīta","inverted"], danda:["daṇḍa","staff"], raja:["rāja","king"], kapota:["kapota","pigeon"], vajra:["vajra","thunderbolt"],
+  pida:["pīḍā","pressure"], kukkuta:["kukkuṭa","rooster"],
+};
+// [series, sanskrit, variants, IAST, English, roots, figure key]
+const ASH_RAW = [
+ ["Primary","Padangusthasana","","Pādāṅguṣṭhāsana","Big Toe Pose",[R_.pada,R_.angustha]],
+ ["Primary","Pada Hastasana","","Pādahastāsana","Hand Under Foot Pose",[R_.pada,R_.hasta]],
+ ["Primary","Utthita Trikonasana","A","Utthita Trikoṇāsana","Extended Triangle",[R_.utthita,R_.tri,R_.kona],"Trikonasana"],
+ ["Primary","Parivrtta Trikonasana","B","Parivṛtta Trikoṇāsana","Revolved Triangle",[R_.parivrtta,R_.tri,R_.kona]],
+ ["Primary","Utthita Parsvakonasana","A","Utthita Pārśvakoṇāsana","Extended Side Angle",[R_.utthita,R_.parsva,R_.kona]],
+ ["Primary","Parivrtta Parsvakonasana","B","Parivṛtta Pārśvakoṇāsana","Revolved Side Angle",[R_.parivrtta,R_.parsva,R_.kona]],
+ ["Primary","Prasarita Padottanasana","A–D","Prasārita Pādottānāsana","Wide-Legged Forward Fold",[["prasārita","spread out"],R_.pada,R_.ut,R_.tana]],
+ ["Primary","Parsvottanasana","","Pārśvottānāsana","Intense Side Stretch",[R_.parsva,R_.ut,R_.tana]],
+ ["Primary","Utthita Hasta Padangusthasana","","Utthita Hasta Pādāṅguṣṭhāsana","Extended Hand-to-Big-Toe",[R_.utthita,R_.hasta,R_.pada,R_.angustha]],
+ ["Primary","Ardha Baddha Padmottanasana","","Ardha Baddha Padmottānāsana","Half Bound Lotus Standing Forward Fold",[R_.ardha,R_.baddha,R_.padma,R_.ut,R_.tana]],
+ ["Primary","Utkatasana","","Utkaṭāsana","Chair Pose (Fierce Pose)",[["utkaṭa","fierce, powerful"]]],
+ ["Primary","Virabhadrasana","A","Vīrabhadrāsana A","Warrior I",[["vīrabhadra","fierce warrior, a form of Shiva"]],"Virabhadrasana I"],
+ ["Primary","Virabhadrasana","B","Vīrabhadrāsana B","Warrior II",[["vīrabhadra","fierce warrior, a form of Shiva"]],"Virabhadrasana II"],
+ ["Primary","Dandasana","","Daṇḍāsana","Staff Pose",[R_.danda]],
+ ["Primary","Paschimottanasana","A–C","Paścimottānāsana","Seated Forward Fold",[R_.paschima,R_.ut,R_.tana]],
+ ["Primary","Purvottanasana","","Pūrvottānāsana","Upward Plank (Intense East Stretch)",[["pūrva","east, the front of the body"],R_.ut,R_.tana]],
+ ["Primary","Ardha Baddha Padma Paschimottanasana","","Ardha Baddha Padma Paścimottānāsana","Half Bound Lotus Seated Forward Fold",[R_.ardha,R_.baddha,R_.padma,R_.paschima,R_.ut,R_.tana]],
+ ["Primary","Tiriang Mukha Eka Pada Paschimottanasana","","Tiryaṅ Mukha Eka Pāda Paścimottānāsana","One Leg Folded Back Forward Fold",[["tiryaṅ mukha","facing across; often taught as “three limbs facing”"],R_.eka,R_.pada,R_.paschima,R_.ut,R_.tana]],
+ ["Primary","Janu Sirsasana","A–C","Jānu Śīrṣāsana","Head-to-Knee Pose",[["jānu","knee"],R_.sirsa]],
+ ["Primary","Marichyasana","A","Marīcyāsana A","Sage Marichi's Pose A (forward fold)",[["marīci","a sage, son of Brahma"]],"Marichyasana A"],
+ ["Primary","Marichyasana","B","Marīcyāsana B","Sage Marichi's Pose B (half lotus forward fold)",[["marīci","a sage, son of Brahma"]],"Marichyasana B"],
+ ["Primary","Marichyasana","C","Marīcyāsana C","Sage Marichi's Pose C (twist)",[["marīci","a sage, son of Brahma"]],"Marichyasana C"],
+ ["Primary","Marichyasana","D","Marīcyāsana D","Sage Marichi's Pose D (half lotus twist)",[["marīci","a sage, son of Brahma"]],"Marichyasana D"],
+ ["Primary","Navasana","","Nāvāsana","Boat Pose",[["nāvā","boat"]]],
+ ["Primary","Bhujapidasana","","Bhujapīḍāsana","Shoulder-Pressing Pose",[["bhuja","arm, shoulder"],R_.pida]],
+ ["Primary","Kurmasana","","Kūrmāsana","Tortoise Pose",[["kūrma","tortoise"]]],
+ ["Primary","Supta Kurmasana","","Supta Kūrmāsana","Sleeping Tortoise",[R_.supta,["kūrma","tortoise"]]],
+ ["Primary","Garbha Pindasana","","Garbha Piṇḍāsana","Embryo in the Womb",[["garbha","womb"],["piṇḍa","embryo"]]],
+ ["Primary","Kukkutasana","","Kukkuṭāsana","Rooster Pose",[R_.kukkuta]],
+ ["Primary","Baddha Konasana","A–B","Baddha Koṇāsana","Bound Angle",[R_.baddha,R_.kona]],
+ ["Primary","Upavistha Konasana","A–B","Upaviṣṭha Koṇāsana","Wide-Angle Seated Forward Fold",[["upaviṣṭha","seated"],R_.kona]],
+ ["Primary","Supta Konasana","","Supta Koṇāsana","Reclining Angle Pose",[R_.supta,R_.kona]],
+ ["Primary","Supta Padangusthasana","","Supta Pādāṅguṣṭhāsana","Reclining Big Toe Pose",[R_.supta,R_.pada,R_.angustha]],
+ ["Primary","Ubhaya Padangusthasana","","Ubhaya Pādāṅguṣṭhāsana","Both Big Toes Pose",[["ubhaya","both"],R_.pada,R_.angustha]],
+ ["Primary","Urdhva Mukha Paschimottanasana","","Ūrdhva Mukha Paścimottānāsana","Upward-Facing Forward Fold",[R_.urdhva,R_.mukha,R_.paschima,R_.ut,R_.tana]],
+ ["Primary","Setu Bandhasana","","Setu Bandhāsana","Bridge (Ashtanga version)",[["setu","bridge"],["bandha","lock, bind"]]],
+ ["Primary","Urdhva Dhanurasana","","Ūrdhva Dhanurāsana","Wheel (Upward Bow)",[R_.urdhva,["dhanu","bow"]]],
+
+ ["Intermediate","Pasasana","","Pāśāsana","Noose Pose",[["pāśa","noose"]]],
+ ["Intermediate","Krounchasana","","Krauñcāsana","Heron Pose",[["krauñca","heron"]]],
+ ["Intermediate","Salabhasana","A–B","Śalabhāsana","Locust Pose",[["śalabha","locust"]]],
+ ["Intermediate","Bhekasana","","Bhekāsana","Frog Pose",[["bheka","frog"]]],
+ ["Intermediate","Dhanurasana","","Dhanurāsana","Bow Pose",[["dhanu","bow"]]],
+ ["Intermediate","Parsva Dhanurasana","","Pārśva Dhanurāsana","Side Bow",[R_.parsva,["dhanu","bow"]]],
+ ["Intermediate","Ustrasana","","Uṣṭrāsana","Camel Pose",[["uṣṭra","camel"]]],
+ ["Intermediate","Laghu Vajrasana","","Laghu Vajrāsana","Little Thunderbolt",[["laghu","light, little"],R_.vajra]],
+ ["Intermediate","Kapotasana","A–B","Kapotāsana","Pigeon (kneeling backbend)",[R_.kapota]],
+ ["Intermediate","Supta Vajrasana","","Supta Vajrāsana","Reclining Thunderbolt",[R_.supta,R_.vajra]],
+ ["Intermediate","Bakasana","A–B","Bakāsana","Crane Pose",[["baka","crane"]]],
+ ["Intermediate","Bharadvajasana","","Bharadvājāsana","Sage Bharadvaja's Twist",[["bharadvāja","a sage"]]],
+ ["Intermediate","Ardha Matsyendrasana","","Ardha Matsyendrāsana","Half Lord of the Fishes",[R_.ardha,["matsya","fish"],["indra","lord"]]],
+ ["Intermediate","Eka Pada Sirsasana","","Eka Pāda Śīrṣāsana","One Leg Behind the Head",[R_.eka,R_.pada,R_.sirsa]],
+ ["Intermediate","Dwi Pada Sirsasana","","Dvi Pāda Śīrṣāsana","Both Legs Behind the Head",[["dvi","two"],R_.pada,R_.sirsa]],
+ ["Intermediate","Yoganidrasana","","Yoganidrāsana","Yogic Sleep Pose",[["yoga","union"],["nidrā","sleep"]]],
+ ["Intermediate","Tittibhasana","A–C","Ṭiṭṭibhāsana","Firefly Pose",[["ṭiṭṭibha","firefly, small insect"]]],
+ ["Intermediate","Pincha Mayurasana","","Piñcha Mayūrāsana","Forearm Stand (Peacock Feather)",[["piñcha","feather"],["mayūra","peacock"]]],
+ ["Intermediate","Karandavasana","","Kāraṇḍavāsana","Duck Pose",[["kāraṇḍava","a kind of duck"]]],
+ ["Intermediate","Mayurasana","","Mayūrāsana","Peacock Pose",[["mayūra","peacock"]]],
+ ["Intermediate","Nakrasana","","Nakrāsana","Crocodile Pose",[["nakra","crocodile"]],"Chaturanga Dandasana"],
+ ["Intermediate","Vatayanasana","","Vātāyanāsana","Horse Face Pose",[["vātāyana","horse"]]],
+ ["Intermediate","Parighasana","","Parighāsana","Gate Pose (Ashtanga version)",[["parigha","gate, iron bar"]]],
+ ["Intermediate","Gomukhasana","A–B","Gomukhāsana","Cow Face Pose",[["go","cow"],R_.mukha]],
+ ["Intermediate","Supta Urdhva Pada Vajrasana","","Supta Ūrdhva Pāda Vajrāsana","Reclining Upward-Foot Thunderbolt",[R_.supta,R_.urdhva,R_.pada,R_.vajra]],
+ ["Intermediate","Mukta Hasta Sirsasana","A–C","Mukta Hasta Śīrṣāsana","Free-Hands Headstand",[["mukta","free"],R_.hasta,R_.sirsa]],
+ ["Intermediate","Baddha Hasta Sirsasana","A–D","Baddha Hasta Śīrṣāsana","Bound-Hands Headstand",[R_.baddha,R_.hasta,R_.sirsa]],
+
+ ["Advanced A","Vasisthasana","","Vasiṣṭhāsana","Sage Vasistha's Pose (side plank, holding toe)",[["vasiṣṭha","a revered sage"]],"Vasisthasana B"],
+ ["Advanced A","Visvamitrasana","","Viśvāmitrāsana","Sage Vishvamitra's Pose",[["viśvāmitra","a sage"]]],
+ ["Advanced A","Kasyapasana","","Kaśyapāsana","Sage Kashyapa's Pose",[["kaśyapa","a sage"]]],
+ ["Advanced A","Chakorasana","","Cakorāsana","Chakora Bird Pose",[["cakora","a partridge-like bird"]]],
+ ["Advanced A","Bhairavasana","","Bhairavāsana","Bhairava's Pose (reclining, leg behind head)",[["bhairava","a fierce form of Shiva"]]],
+ ["Advanced A","Skandasana","","Skandāsana","Skanda's Pose (forward fold, leg behind head)",[["skanda","god of war"]]],
+ ["Advanced A","Durvasasana","","Durvāsāsana","Sage Durvasa's Pose (standing, leg behind head)",[["durvāsā","a sage"]]],
+ ["Advanced A","Urdhva Kukkutasana","A–C","Ūrdhva Kukkuṭāsana","Upward Rooster",[R_.urdhva,R_.kukkuta]],
+ ["Advanced A","Galavasana","","Gālavāsana","Sage Galava's Pose",[["gālava","a sage"]]],
+ ["Advanced A","Eka Pada Bakasana","A–B","Eka Pāda Bakāsana","One-Legged Crane",[R_.eka,R_.pada,["baka","crane"]]],
+ ["Advanced A","Koundinyasana","A–B","Kauṇḍinyāsana","Sage Kaundinya's Pose",[["kauṇḍinya","a sage"]]],
+ ["Advanced A","Astavakrasana","A–B","Aṣṭāvakrāsana","Eight-Angle Pose (Sage Ashtavakra)",[["aṣṭa","eight"],["vakra","bend, crooked"]]],
+ ["Advanced A","Purna Matsyendrasana","","Pūrṇa Matsyendrāsana","Full Lord of the Fishes",[["pūrṇa","full"],["matsya","fish"],["indra","lord"]]],
+ ["Advanced A","Viranchyasana","A–B","Viriñcyāsana","Viranchi's Pose",[["viriñci","a name of Brahma"]]],
+ ["Advanced A","Viparita Dandasana","","Viparīta Daṇḍāsana","Inverted Staff",[R_.viparita,R_.danda]],
+ ["Advanced A","Eka Pada Viparita Dandasana","","Eka Pāda Viparīta Daṇḍāsana","One-Legged Inverted Staff",[R_.eka,R_.pada,R_.viparita,R_.danda]],
+ ["Advanced A","Viparita Salabhasana","","Viparīta Śalabhāsana","Inverted Locust",[R_.viparita,["śalabha","locust"]]],
+ ["Advanced A","Ganda Bherundasana","","Gaṇḍa Bheruṇḍāsana","Formidable Face Pose",[["gaṇḍa","cheek, side of the face"],["bheruṇḍa","formidable; a mythical bird"]]],
+ ["Advanced A","Hanumanasana","","Hanumānāsana","Splits (Monkey God Pose)",[["hanumān","the monkey god"]]],
+ ["Advanced A","Supta Trivikramasana","","Supta Trivikramāsana","Reclining Trivikrama (Vishnu's Three Strides)",[R_.supta,["trivikrama","Vishnu taking three strides"]]],
+ ["Advanced A","Dighasana","A–B","Dighāsana","Dighasana (Warrior III–like)",[["dig","direction; meaning debated"]],"Virabhadrasana III"],
+ ["Advanced A","Trivikramasana","","Trivikramāsana","Standing Splits (Vishnu's Three Strides)",[["trivikrama","Vishnu taking three strides"]]],
+ ["Advanced A","Natarajasana","","Naṭarājāsana","Dancer Pose (Lord of the Dance)",[["naṭa","dancer"],["rāja","king"]]],
+ ["Advanced A","Raja Kapotasana","","Rāja Kapotāsana","King Pigeon",[R_.raja,R_.kapota]],
+ ["Advanced A","Eka Pada Raja Kapotasana","","Eka Pāda Rāja Kapotāsana","One-Legged King Pigeon (full)",[R_.eka,R_.pada,R_.raja,R_.kapota]],
+
+ ["Finishing","Salamba Sarvangasana","","Sālamba Sarvāṅgāsana","Supported Shoulder Stand",[["sālamba","supported"],["sarva","all"],["aṅga","limb"]]],
+ ["Finishing","Halasana","","Halāsana","Plow Pose",[["hala","plow"]]],
+ ["Finishing","Karnapidasana","","Karṇapīḍāsana","Ear-Pressure Pose",[["karṇa","ear"],R_.pida]],
+ ["Finishing","Urdhva Padmasana","","Ūrdhva Padmāsana","Upward Lotus",[R_.urdhva,R_.padma]],
+ ["Finishing","Pindasana","","Piṇḍāsana","Embryo Pose",[["piṇḍa","embryo"]]],
+ ["Finishing","Matsyasana","","Matsyāsana","Fish Pose",[["matsya","fish"]]],
+ ["Finishing","Uttana Padasana","","Uttāna Pādāsana","Extended Leg Pose",[["uttāna","stretched out"],R_.pada]],
+ ["Finishing","Sirsasana","","Śīrṣāsana","Headstand",[R_.sirsa]],
+ ["Finishing","Baddha Padmasana","","Baddha Padmāsana","Bound Lotus",[R_.baddha,R_.padma]],
+ ["Finishing","Yoga Mudra","","Yoga Mudrā","Yoga Seal",[["yoga","union"],["mudrā","seal, gesture"]],null,true],
+ ["Finishing","Padmasana","","Padmāsana","Lotus Pose",[R_.padma]],
+ ["Finishing","Utpluthih","","Utplutiḥ","Lifted Lotus (Uplifting)",[["ut","up"],["pluti","leap, float"]],null,true],
+];
+const ASHTANGA = ASH_RAW.map(([c,s,v,i,e,r,f,noAsana])=>({c,s,v,i,e,f:f||s,r:noAsana?r:[...r,["āsana","pose, seat"]]}));
+{const counts={};ASHTANGA.forEach(p=>{p.n=(counts[p.c]=(counts[p.c]||0)+1);});ASHTANGA.forEach(p=>p.of=counts[p.c]);}
+
+const SETS = {general:POSES, ashtanga:ASHTANGA};
+const keyOf = p => p.s+(p.v?" "+p.v:"");
+const dn = p => p.s+(p.v?" "+p.v:"");
+const iastOf = p => p.i+(p.v&&!p.i.endsWith(p.v)?" "+p.v:"");
+const KEY = "asana-flashcards-known-v2";
+
+const st = {set:"general",mode:"cards",dir:"pose",cat:"All",onlyLearning:false,deck:[],idx:0,flipped:false,known:new Set(),quiz:null,score:{right:0,total:0}};
+try{const raw=localStorage.getItem(KEY); if(raw) st.known=new Set(JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify([...st.known]));}catch(e){}}
+
+const $ = s=>document.querySelector(s);
+const esc = t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffleArr = a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+function pool(){return SETS[st.set].filter(p=>st.cat==="All"||p.c===st.cat);}
+function buildDeck(shuffle){
+  let d = pool();
+  if(st.onlyLearning) d = d.filter(p=>!st.known.has(keyOf(p)));
+  st.deck = shuffle ? shuffleArr([...d]) : d;
+  st.idx = 0; st.flipped = false;
+}
+
+/* Pose images: uses images/<name>.png|jpg|jpeg|webp when present, otherwise the stick figure */
+const IMG = {};
+const slugOf = k => k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function currentPose(){ return st.mode==="cards" ? st.deck[st.idx] : st.quiz && st.quiz.p; }
+function probe(slug){
+  IMG[slug]="pending";
+  const exts=["png","jpg","jpeg","webp"]; let i=0;
+  const next=()=>{
+    if(i>=exts.length){ IMG[slug]=false; return; }
+    const url=`images/${slug}.${exts[i++]}`, im=new Image();
+    im.onload=()=>{ IMG[slug]=url; const c=currentPose(); if(c && slugOf(c.f)===slug) render(); };
+    im.onerror=next; im.src=url;
+  };
+  next();
+}
+function art(p,small){
+  const slug=slugOf(p.f), u=IMG[slug];
+  if(u && u!=="pending") return `<img class="art${small?" small":""}" src="${u}" alt="Sketch of ${esc(p.e)}">`;
+  if(u===undefined) probe(slug);
+  const svg=figureSVG(p.f);
+  return small ? svg.replace('class="fig"','class="fig small"') : svg;
+}
+function preload(p){ if(p){ const sl=slugOf(p.f); if(IMG[sl]===undefined) probe(sl); } }
+
+function rootsHTML(p){
+  return `<div class="roots" aria-label="Word roots">${p.r.map((r,k)=>
+    (k?`<span class="plus" aria-hidden="true">+</span>`:"")+
+    `<div class="root"><b lang="sa">${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("")}</div>`;
+}
+function sanskritBlock(p,big){
+  return `<p class="${big?"big":"mid"}" lang="sa">${esc(dn(p))}</p><div class="iast" lang="sa">${esc(iastOf(p))}</div>`;
+}
+function catLabel(p){
+  if(st.set!=="ashtanga") return esc(p.c);
+  return p.c==="Finishing" ? `Finishing sequence · ${p.n} of ${p.of}` : `${esc(p.c)} series · ${p.n} of ${p.of}`;
+}
+
+function renderStats(){
+  const p = pool(), k = p.filter(x=>st.known.has(keyOf(x))).length;
+  $("#stats").innerHTML = `<strong>${k}</strong> of ${p.length} known${st.cat==="All"?(st.set==="ashtanga"?" in Ashtanga":""):" in "+esc(st.cat)}`;
+}
+
+function renderCards(){
+  const main = $("#main");
+  if(!st.deck.length){
+    main.innerHTML = `<div class="empty"><p>You've marked every pose in this set as known.</p>
+      <button class="btn" id="showAll">Study all poses in this set</button></div>`;
+    $("#showAll").onclick=()=>{st.onlyLearning=false;$("#onlyLearning").checked=false;buildDeck();render();};
+    return;
+  }
+  preload(st.deck[st.idx+1]);
+  const p = st.deck[st.idx], isKnown = st.known.has(keyOf(p));
+  const front = st.dir==="pose"
+    ? `${art(p)}<p class="prompt">Say the Sanskrit name out loud</p>`
+    : st.dir==="sa" ? `${sanskritBlock(p,true)}` : `<p class="big">${esc(p.e)}</p>`;
+  const back = st.dir==="pose"
+    ? `${sanskritBlock(p,false)}<div class="cat">${esc(p.e)}</div>${rootsHTML(p)}`
+    : `${art(p,true)}` + (st.dir==="sa"
+      ? `<p class="mid">${esc(p.e)}</p>${rootsHTML(p)}`
+      : `${sanskritBlock(p,false)}${rootsHTML(p)}`);
+  const pct = Math.round(((st.idx+1)/st.deck.length)*100);
+  main.innerHTML = `
+    <div class="stage">
+      <button class="card${st.flipped?" flipped":""}" id="card" aria-label="Flashcard. Press to ${st.flipped?"see the front":"reveal the answer"}">
+        <div class="face front" aria-hidden="${st.flipped}"><span class="cat">${catLabel(p)}${isKnown?" · known":""}</span>${front}<span class="hint">Tap or press space to reveal</span></div>
+        <div class="face back" aria-hidden="${!st.flipped}"><span class="cat">${catLabel(p)}</span>${back}</div>
+      </button>
+    </div>
+    <div class="actions">
+      <button class="btn nav" id="prev" aria-label="Previous card" ${st.idx===0?"disabled":""}>‹</button>
+      <button class="btn learn" id="learn">Still learning</button>
+      <button class="btn know" id="know">Got it</button>
+      <button class="btn nav" id="next" aria-label="Next card" ${st.idx>=st.deck.length-1?"disabled":""}>›</button>
+    </div>
+    <div class="progress"><span>Card ${st.idx+1} of ${st.deck.length}</span><span>${pct}%</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <p class="keys"><kbd>Space</kbd> flip &nbsp; <kbd>←</kbd><kbd>→</kbd> move &nbsp; <kbd>1</kbd> still learning &nbsp; <kbd>2</kbd> got it</p>`;
+  $("#card").onclick = flip;
+  $("#prev").onclick = ()=>go(-1);
+  $("#next").onclick = ()=>go(1);
+  $("#learn").onclick = ()=>mark(false);
+  $("#know").onclick = ()=>mark(true);
+}
+function flip(){st.flipped=!st.flipped; const c=$("#card"); if(c){c.classList.toggle("flipped",st.flipped);
+  c.querySelector(".front").setAttribute("aria-hidden",st.flipped); c.querySelector(".back").setAttribute("aria-hidden",!st.flipped);}}
+function go(d){const n=st.idx+d; if(n<0||n>=st.deck.length) return; st.idx=n; st.flipped=false; renderCards();}
+function mark(known){
+  const p = st.deck[st.idx];
+  known ? st.known.add(keyOf(p)) : st.known.delete(keyOf(p));
+  save(); renderStats();
+  if(st.onlyLearning && known){
+    st.deck.splice(st.idx,1);
+    if(st.idx>=st.deck.length) st.idx=Math.max(0,st.deck.length-1);
+    st.flipped=false; renderCards(); return;
+  }
+  if(st.idx<st.deck.length-1){st.idx++; st.flipped=false;}
+  renderCards();
+}
+
+/* Quiz */
+function newQuestion(){
+  let candidates = pool();
+  if(st.onlyLearning){const l=candidates.filter(p=>!st.known.has(keyOf(p))); if(l.length) candidates=l;}
+  const prev = st.quiz && st.quiz.p;
+  let p; do{p=candidates[Math.floor(Math.random()*candidates.length)];}while(candidates.length>1&&p===prev);
+  let others = pool().filter(x=>x!==p);
+  if(others.length<3) others = SETS[st.set].filter(x=>x!==p);
+  const opts = shuffleArr([p,...shuffleArr([...others]).slice(0,3)]);
+  st.quiz = {p,opts,answered:false};
+}
+function renderQuiz(){
+  if(!st.quiz) newQuestion();
+  const {p,opts,answered,choice} = st.quiz;
+  const prompt = st.dir==="pose" ? `<div style="display:flex;justify-content:center">${art(p)}</div>`
+    : st.dir==="sa" ? sanskritBlock(p,true) : `<p class="big">${esc(p.e)}</p>`;
+  const label = o => st.dir==="sa" ? esc(o.e) : `<span lang="sa">${esc(dn(o))}</span>`;
+  $("#main").innerHTML = `
+    <div class="quiz">
+      <span class="cat">${st.dir==="sa"?"What is this pose in English?":"What is this pose in Sanskrit?"}</span>
+      ${prompt}
+      <div class="options">${opts.map((o,k)=>{
+        let cls="opt"; if(answered){ if(o===p) cls+=" right"; else if(o===choice) cls+=" wrong"; }
+        return `<button class="${cls}" data-k="${k}" ${answered?"disabled":""}>${label(o)}</button>`;}).join("")}</div>
+      <div class="feedback ${answered?(choice===p?"good":"bad"):""}" aria-live="polite">${answered?(choice===p?"Correct.":"Not quite. The answer is highlighted."):""}</div>
+      ${answered?(st.dir==="pose"?`<div class="cat" style="margin-top:8px">${esc(p.e)}</div>`:"")+rootsHTML(p)+`<button class="btn next" id="nextQ">Next question</button>`:""}
+    </div>
+    <div class="progress"><span>Score: ${st.score.right} / ${st.score.total}</span>
+      <button class="link" id="resetScore">Reset score</button></div>
+    <p class="keys"><kbd>1</kbd>–<kbd>4</kbd> choose &nbsp; <kbd>Enter</kbd> next question</p>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  if(answered) $("#nextQ").onclick=()=>{newQuestion();renderQuiz();$(".opt")?.focus();};
+  $("#resetScore").onclick=()=>{st.score={right:0,total:0};renderQuiz();};
+}
+function answer(k){
+  const q=st.quiz; if(q.answered) return;
+  q.answered=true; q.choice=q.opts[k];
+  st.score.total++; if(q.choice===q.p) st.score.right++;
+  renderQuiz(); $("#nextQ")?.focus();
+}
+
+function render(){
+  document.querySelectorAll("[data-set]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.set===st.set));
+  document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===st.mode));
+  document.querySelectorAll("[data-dir]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.dir===st.dir));
+  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.cat===st.cat));
+  $("#foot").textContent = st.set==="ashtanga"
+    ? "Ashtanga cards follow the traditional K. Pattabhi Jois sequence order. Some shalas name or order a few poses differently."
+    : "Spellings vary between lineages and teachers. Transliteration shown in IAST.";
+  $("#shuffle").textContent = st.mode==="cards" ? "Shuffle" : "Skip question";
+  renderStats();
+  st.mode==="cards" ? renderCards() : renderQuiz();
+}
+
+function renderChips(){
+  const cats = ["All",...new Set(SETS[st.set].map(p=>p.c))];
+  const name = c => c==="All" ? (st.set==="ashtanga"?"All series":"All") : (st.set==="ashtanga"&&c!=="Finishing" ? c+" series" : c);
+  $("#chips").innerHTML = cats.map(c=>`<button class="chip" data-cat="${esc(c)}">${esc(name(c))}</button>`).join("");
+  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{st.cat=b.dataset.cat; buildDeck(); st.quiz=null; render();});
+}
+renderChips();
+document.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{ if(st.set===b.dataset.set) return;
+  st.set=b.dataset.set; st.cat="All"; renderChips(); buildDeck(); st.quiz=null; render();});
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{st.mode=b.dataset.mode; if(st.mode==="quiz") st.quiz=null; render();});
+document.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{st.dir=b.dataset.dir; st.flipped=false; render();});
+$("#onlyLearning").onchange=e=>{st.onlyLearning=e.target.checked; buildDeck(); st.quiz=null; render();};
+$("#shuffle").onclick=()=>{ if(st.mode==="cards"){buildDeck(true);} else {newQuestion();} render(); };
+let resetArmed=null;
+$("#reset").onclick=()=>{
+  const btn=$("#reset");
+  if(!resetArmed){ btn.textContent="Click again to clear progress"; resetArmed=setTimeout(()=>{resetArmed=null;btn.textContent="Reset progress";},3000); return; }
+  clearTimeout(resetArmed); resetArmed=null; btn.textContent="Progress cleared";
+  st.known.clear(); save(); buildDeck(); render();
+  setTimeout(()=>{btn.textContent="Reset progress";},1500);
+};
+
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"||e.metaKey||e.ctrlKey||e.altKey) return;
+  if(st.mode==="cards"){
+    if(!st.deck.length) return;
+    if(e.key===" "){e.preventDefault(); flip();}
+    else if(e.key==="ArrowRight") go(1);
+    else if(e.key==="ArrowLeft") go(-1);
+    else if(e.key==="1") mark(false);
+    else if(e.key==="2") mark(true);
+  } else {
+    if(/^[1-4]$/.test(e.key)) answer(+e.key-1);
+    else if(e.key==="Enter" && st.quiz?.answered && e.target.id!=="nextQ"){newQuestion();renderQuiz();}
+  }
+});
+
+buildDeck(); render();
+</script>
+</body>
+</html>
