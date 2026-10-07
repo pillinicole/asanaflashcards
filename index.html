@@ -70,6 +70,10 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,6vw,2.75rem);li
 .fig .near{stroke:var(--ink)} .fig .far{stroke:var(--muted);opacity:.55}
 .fig .floor{stroke:var(--line);stroke-width:2} .fig .head{fill:var(--surface);stroke:var(--ink);stroke-width:5}
 .fig.small{width:120px;margin-bottom:-6px}
+.art{display:block;width:min(100%,300px);max-height:250px;object-fit:contain;mix-blend-mode:multiply}
+.art.small{width:130px;max-height:110px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .art{filter:invert(.92);mix-blend-mode:screen}}
+:root[data-theme="dark"] .art{filter:invert(.92);mix-blend-mode:screen}
 .prompt{font-family:var(--serif);font-size:1.15rem;color:var(--muted);margin:0}
 .hint{position:absolute;bottom:14px;left:0;right:0;font-size:.8rem;color:var(--muted)}
 
@@ -509,6 +513,30 @@ function buildDeck(shuffle){
   st.idx = 0; st.flipped = false;
 }
 
+/* Pose images: uses images/<name>.png|jpg|jpeg|webp when present, otherwise the stick figure */
+const IMG = {};
+const slugOf = k => k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function currentPose(){ return st.mode==="cards" ? st.deck[st.idx] : st.quiz && st.quiz.p; }
+function probe(slug){
+  IMG[slug]="pending";
+  const exts=["png","jpg","jpeg","webp"]; let i=0;
+  const next=()=>{
+    if(i>=exts.length){ IMG[slug]=false; return; }
+    const url=`images/${slug}.${exts[i++]}`, im=new Image();
+    im.onload=()=>{ IMG[slug]=url; const c=currentPose(); if(c && slugOf(c.f)===slug) render(); };
+    im.onerror=next; im.src=url;
+  };
+  next();
+}
+function art(p,small){
+  const slug=slugOf(p.f), u=IMG[slug];
+  if(u && u!=="pending") return `<img class="art${small?" small":""}" src="${u}" alt="Sketch of ${esc(p.e)}">`;
+  if(u===undefined) probe(slug);
+  const svg=figureSVG(p.f);
+  return small ? svg.replace('class="fig"','class="fig small"') : svg;
+}
+function preload(p){ if(p){ const sl=slugOf(p.f); if(IMG[sl]===undefined) probe(sl); } }
+
 function rootsHTML(p){
   return `<div class="roots" aria-label="Word roots">${p.r.map((r,k)=>
     (k?`<span class="plus" aria-hidden="true">+</span>`:"")+
@@ -535,13 +563,14 @@ function renderCards(){
     $("#showAll").onclick=()=>{st.onlyLearning=false;$("#onlyLearning").checked=false;buildDeck();render();};
     return;
   }
+  preload(st.deck[st.idx+1]);
   const p = st.deck[st.idx], isKnown = st.known.has(keyOf(p));
   const front = st.dir==="pose"
-    ? `${figureSVG(p.f)}<p class="prompt">Say the Sanskrit name out loud</p>`
+    ? `${art(p)}<p class="prompt">Say the Sanskrit name out loud</p>`
     : st.dir==="sa" ? `${sanskritBlock(p,true)}` : `<p class="big">${esc(p.e)}</p>`;
   const back = st.dir==="pose"
     ? `${sanskritBlock(p,false)}<div class="cat">${esc(p.e)}</div>${rootsHTML(p)}`
-    : `${figureSVG(p.f).replace('class="fig"','class="fig small"')}` + (st.dir==="sa"
+    : `${art(p,true)}` + (st.dir==="sa"
       ? `<p class="mid">${esc(p.e)}</p>${rootsHTML(p)}`
       : `${sanskritBlock(p,false)}${rootsHTML(p)}`);
   const pct = Math.round(((st.idx+1)/st.deck.length)*100);
@@ -597,7 +626,7 @@ function newQuestion(){
 function renderQuiz(){
   if(!st.quiz) newQuestion();
   const {p,opts,answered,choice} = st.quiz;
-  const prompt = st.dir==="pose" ? `<div style="display:flex;justify-content:center">${figureSVG(p.f)}</div>`
+  const prompt = st.dir==="pose" ? `<div style="display:flex;justify-content:center">${art(p)}</div>`
     : st.dir==="sa" ? sanskritBlock(p,true) : `<p class="big">${esc(p.e)}</p>`;
   const label = o => st.dir==="sa" ? esc(o.e) : `<span lang="sa">${esc(dn(o))}</span>`;
   $("#main").innerHTML = `
