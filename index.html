@@ -56,10 +56,39 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,6vw,2.75rem);li
 .link{border:0;background:none;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:3px;padding:4px}
 
 /* Card */
-.stage{perspective:1400px}
+.stage{position:relative;margin:6px 10px 14px 0}
+.stage::before,.stage::after{content:"";position:absolute;inset:0;background:var(--surface);border:1px solid var(--line);border-radius:6px 28px 6px 28px}
+.stage::before{transform:translate(10px,10px) rotate(1.4deg);opacity:.5}
+.stage::after{transform:translate(5px,5px) rotate(.7deg);opacity:.8}
+.lift{position:relative;z-index:1;perspective:1400px;transition:transform .22s cubic-bezier(.2,.7,.2,1),opacity .22s;touch-action:pan-y}
+.lift.dragging{transition:none}
+@media (hover:hover){
+  .lift:not(.dragging):hover{transform:translateY(-5px) rotate(-.4deg)}
+  .lift:hover .face{box-shadow:0 18px 34px -14px rgba(0,0,0,.35)}
+  .lift:hover .flipchip svg{transform:rotate(-180deg)}
+}
+.lift:active:not(.dragging){transform:scale(.985)}
+.lift.in-next{animation:inNext .3s cubic-bezier(.2,.7,.2,1)}
+.lift.in-prev{animation:inPrev .3s cubic-bezier(.2,.7,.2,1)}
+@keyframes inNext{from{opacity:0;transform:translateX(48px) rotate(2deg)}}
+@keyframes inPrev{from{opacity:0;transform:translateX(-48px) rotate(-2deg)}}
+.lift.out-know{transform:translateX(115%) rotate(9deg);opacity:0}
+.lift.out-learn{transform:translateX(-115%) rotate(-9deg);opacity:0}
+.lift.out-know .face{border-color:var(--sage);box-shadow:0 0 0 3px var(--sage-soft)}
+.lift.out-learn .face{border-color:var(--plum);box-shadow:0 0 0 3px var(--plum-soft)}
+.card{cursor:pointer}
+.card:focus-visible{outline:none}
+.card:focus-visible .face{outline:2px solid var(--marigold);outline-offset:3px}
+.flipchip{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:999px;background:var(--marigold-soft);color:var(--ink);font-size:.85rem;font-weight:500;white-space:nowrap}
+.flipchip svg{width:15px;height:15px;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.flipchip.nudge{animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{0%,100%{box-shadow:0 0 0 0 var(--marigold-soft)}50%{box-shadow:0 0 0 7px transparent}}
+.swipe-tip{display:none}
+@media (hover:none){.swipe-tip{display:inline}.key-tip{display:none}}
 .card{position:relative;width:100%;min-height:540px;border:0;padding:0;background:none;text-align:center;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .card.flipped{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px 24px;background:var(--surface);border:1px solid var(--line);border-radius:6px 28px 6px 28px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px 24px 64px;box-shadow:0 8px 20px -14px rgba(0,0,0,.3);transition:box-shadow .22s,border-color .22s;background:var(--surface);border:1px solid var(--line);border-radius:6px 28px 6px 28px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .back{transform:rotateY(180deg)}
 .cat{font-size:.8rem;color:var(--muted)}
 .big{font-family:var(--serif);font-size:clamp(2rem,7.5vw,3.4rem);line-height:1.1;margin:0;overflow-wrap:anywhere}
@@ -121,6 +150,7 @@ footer{margin-top:36px;font-size:.8rem;color:var(--muted);text-align:center}
 }
 @media (prefers-reduced-motion:reduce){
   .card{transition:none}
+  .lift,.lift.in-next,.lift.in-prev,.flipchip.nudge,.flipchip svg{transition:none;animation:none}
   .bar i{transition:none}
 }
 </style>
@@ -130,7 +160,7 @@ footer{margin-top:36px;font-size:.8rem;color:var(--muted);text-align:center}
   <header>
     <div>
       <h1>Āsana Flashcards</h1>
-      <p class="tagline">See the pose, say its Sanskrit name, then check yourself.</p>
+      <p class="tagline">Tap or click a card to reveal the pose</p>
     </div>
     <div class="stats" id="stats"></div>
   </header>
@@ -578,10 +608,12 @@ function renderCards(){
   const pct = Math.round(((st.idx+1)/st.deck.length)*100);
   main.innerHTML = `
     <div class="stage">
+     <div class="lift${st.enter?" in-"+st.enter:""}" id="lift">
       <button class="card${st.flipped?" flipped":""}" id="card" aria-label="Flashcard. Press to ${st.flipped?"see the front":"reveal the answer"}">
-        <div class="face front" aria-hidden="${st.flipped}"><span class="cat">${catLabel(p)}${isKnown?" · known":""}</span>${front}<span class="hint">Tap or press space to reveal</span></div>
-        <div class="face back" aria-hidden="${!st.flipped}"><span class="cat">${catLabel(p)}</span>${back}</div>
+        <div class="face front" aria-hidden="${st.flipped}"><span class="cat">${catLabel(p)}${isKnown?" · known":""}</span>${front}<span class="flipchip${st.nudge?" nudge":""}">${FLIP_ICON}Tap to reveal</span></div>
+        <div class="face back" aria-hidden="${!st.flipped}"><span class="cat">${catLabel(p)}</span>${back}<span class="flipchip">${FLIP_ICON}Tap to flip back</span></div>
       </button>
+     </div>
     </div>
     <div class="actions">
       <button class="btn nav" id="prev" aria-label="Previous card" ${st.idx===0?"disabled":""}>‹</button>
@@ -591,27 +623,49 @@ function renderCards(){
     </div>
     <div class="progress"><span>Card ${st.idx+1} of ${st.deck.length}</span><span>${pct}%</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
-    <p class="keys"><kbd>Space</kbd> flip &nbsp; <kbd>←</kbd><kbd>→</kbd> move &nbsp; <kbd>1</kbd> still learning &nbsp; <kbd>2</kbd> got it</p>`;
-  $("#card").onclick = flip;
+    <p class="keys"><span class="key-tip"><kbd>Space</kbd> flip &nbsp; <kbd>←</kbd><kbd>→</kbd> move &nbsp; <kbd>1</kbd> still learning &nbsp; <kbd>2</kbd> got it</span><span class="swipe-tip">Swipe the card left or right to move between poses</span></p>`;
+  st.enter = null;
+  $("#card").onclick = ()=>{ if(swiped){swiped=false;return;} flip(); };
+  attachSwipe($("#lift"));
   $("#prev").onclick = ()=>go(-1);
   $("#next").onclick = ()=>go(1);
   $("#learn").onclick = ()=>mark(false);
   $("#know").onclick = ()=>mark(true);
 }
-function flip(){st.flipped=!st.flipped; const c=$("#card"); if(c){c.classList.toggle("flipped",st.flipped);
+const FLIP_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>`;
+st.nudge = true; st.enter = null;
+let swiped = false, busy = false;
+function attachSwipe(el){
+  let x0=null,y0=0,dx=0;
+  el.addEventListener("pointerdown",e=>{ if(e.pointerType==="mouse") return; x0=e.clientX; y0=e.clientY; dx=0; });
+  el.addEventListener("pointermove",e=>{ if(x0===null) return; dx=e.clientX-x0;
+    if(Math.abs(dx)>10 && Math.abs(dx)>Math.abs(e.clientY-y0)){ el.classList.add("dragging"); el.style.transform=`translateX(${dx}px) rotate(${dx/30}deg)`; } });
+  const end=()=>{ if(x0===null) return; x0=null; el.classList.remove("dragging"); el.style.transform="";
+    if(Math.abs(dx)>70){ swiped=true; setTimeout(()=>swiped=false,350);
+      const d = dx<0 ? 1 : -1; if((d>0 && st.idx<st.deck.length-1)||(d<0 && st.idx>0)) go(d); } };
+  el.addEventListener("pointerup",end); el.addEventListener("pointercancel",end);
+}
+function flip(){st.flipped=!st.flipped; st.nudge=false; $(".flipchip.nudge")?.classList.remove("nudge"); const c=$("#card"); if(c){c.classList.toggle("flipped",st.flipped);
   c.querySelector(".front").setAttribute("aria-hidden",st.flipped); c.querySelector(".back").setAttribute("aria-hidden",!st.flipped);}}
-function go(d){const n=st.idx+d; if(n<0||n>=st.deck.length) return; st.idx=n; st.flipped=false; renderCards();}
+function go(d){const n=st.idx+d; if(n<0||n>=st.deck.length||busy) return; st.idx=n; st.flipped=false; st.enter=d>0?"next":"prev"; renderCards();}
 function mark(known){
+  if(busy || !st.deck.length) return;
+  const lift=$("#lift"), reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(lift && !reduce){ busy=true; lift.classList.add(known?"out-know":"out-learn");
+    setTimeout(()=>{ busy=false; applyMark(known); },240); }
+  else applyMark(known);
+}
+function applyMark(known){
   const p = st.deck[st.idx];
   known ? st.known.add(keyOf(p)) : st.known.delete(keyOf(p));
   save(); renderStats();
   if(st.onlyLearning && known){
     st.deck.splice(st.idx,1);
     if(st.idx>=st.deck.length) st.idx=Math.max(0,st.deck.length-1);
-    st.flipped=false; renderCards(); return;
+    st.flipped=false; st.enter="next"; renderCards(); return;
   }
   if(st.idx<st.deck.length-1){st.idx++; st.flipped=false;}
-  renderCards();
+  st.enter="next"; renderCards();
 }
 
 /* Quiz */
