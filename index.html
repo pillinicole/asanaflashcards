@@ -99,11 +99,8 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,6vw,2.75rem);li
 .fig .near{stroke:var(--ink)} .fig .far{stroke:var(--muted);opacity:.55}
 .fig .floor{stroke:var(--line);stroke-width:2} .fig .head{fill:var(--surface);stroke:var(--ink);stroke-width:5}
 .fig.small{width:120px;margin-bottom:-6px}
-.art{display:block;width:min(100%,440px);max-height:400px;object-fit:contain;
-  filter:grayscale(1) brightness(1.12) contrast(1.35);mix-blend-mode:multiply}
+.art{display:block;width:min(100%,440px);max-height:400px;object-fit:contain;background:transparent}
 .art.small{width:150px;max-height:130px}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .art{filter:grayscale(1) brightness(1.12) contrast(1.35) invert(1);mix-blend-mode:screen}}
-:root[data-theme="dark"] .art{filter:grayscale(1) brightness(1.12) contrast(1.35) invert(1);mix-blend-mode:screen}
 .face:has(.art:not(.small)){gap:4px;padding-top:24px}
 .prompt{font-family:var(--serif);font-size:1.15rem;color:var(--muted);margin:0}
 .hint{position:absolute;bottom:14px;left:0;right:0;font-size:.8rem;color:var(--muted)}
@@ -570,18 +567,45 @@ function probe(slug){
   const next=()=>{
     if(i>=exts.length){ IMG[slug]=false; return; }
     const url=`images/${slug}.${exts[i++]}`, im=new Image();
-    im.onload=()=>{ IMG[slug]=url; const c=currentPose(); if(c && slugOf(c.f)===slug) render(); };
+    im.onload=()=>{ IMG[slug]=im; const c=currentPose(); if(c && slugOf(c.f)===slug) render(); };
     im.onerror=next; im.src=url;
   };
   next();
 }
 function art(p,small){
   const slug=slugOf(p.f), u=IMG[slug];
-  if(u && u!=="pending") return `<img class="art${small?" small":""}" src="${u}" alt="Sketch of ${esc(p.e)}">`;
+  if(u && u!=="pending") return `<img class="art${small?" small":""}" src="${pencil(slug,u)}" alt="Sketch of ${esc(p.e)}">`;
   if(u===undefined) probe(slug);
   const svg=figureSVG(p.f);
   return small ? svg.replace('class="fig"','class="fig small"') : svg;
 }
+/* Turn the sketch's paper into transparency and draw its lines in the page's ink colour.
+   Done with a canvas so it looks the same on every phone and in light or dark mode. */
+const PENCIL = {};
+function pencil(slug, im){
+  const ink = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#1F2E38";
+  const key = slug+"|"+ink;
+  if(PENCIL[key]) return PENCIL[key];
+  try{
+    const scale = Math.min(1, 700/Math.max(im.naturalWidth, im.naturalHeight));
+    const w = Math.max(1, Math.round(im.naturalWidth*scale)), h = Math.max(1, Math.round(im.naturalHeight*scale));
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const cx = cv.getContext("2d"); cx.drawImage(im, 0, 0, w, h);
+    const d = cx.getImageData(0, 0, w, h), px = d.data;
+    const probe = document.createElement("canvas").getContext("2d"); probe.fillStyle = ink; probe.fillRect(0,0,1,1);
+    const [ir, ig, ib] = probe.getImageData(0,0,1,1).data;
+    for(let i=0; i<px.length; i+=4){
+      const lum = (0.299*px[i] + 0.587*px[i+1] + 0.114*px[i+2]) / 255;
+      let a = (1 - lum - 0.16) / 0.56;           // paper (even slightly grey or textured) -> 0, pencil -> 1
+      a = Math.max(0, Math.min(1, a));
+      px[i]=ir; px[i+1]=ig; px[i+2]=ib; px[i+3] = Math.round(a * px[i+3]);
+    }
+    cx.putImageData(d, 0, 0);
+    PENCIL[key] = cv.toDataURL("image/png");
+  }catch(e){ PENCIL[key] = im.src; }
+  return PENCIL[key];
+}
+try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>render()); }catch(e){}
 function preload(p){ if(p){ const sl=slugOf(p.f); if(IMG[sl]===undefined) probe(sl); } }
 
 function rootsHTML(p){
