@@ -152,6 +152,10 @@ kbd{font-family:var(--sans);font-size:.75rem;border:1px solid var(--line);border
 
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:6px 28px 6px 28px;padding:40px 24px;text-align:center}
 .empty p{margin:0 0 14px}
+.done-card{border-style:solid;padding:48px 24px;animation:inNext .3s cubic-bezier(.2,.7,.2,1)}
+.done-title{font-family:var(--serif);font-size:clamp(1.6rem,5vw,2.1rem);line-height:1.2;margin:0 0 10px!important}
+.done-card .muted{color:var(--muted);font-size:.92rem}
+.done-actions{display:flex;flex-direction:column;gap:12px;max-width:380px;margin:22px auto 0}
 footer{margin-top:36px;font-size:.8rem;color:var(--muted);text-align:center}
 
 @media (max-width:520px){
@@ -554,7 +558,7 @@ function buildDeck(shuffle){
   let d = pool();
   if(st.onlyLearning) d = d.filter(p=>!st.known.has(keyOf(p)));
   st.deck = shuffle ? shuffleArr([...d]) : d;
-  st.idx = 0; st.flipped = false;
+  st.idx = 0; st.flipped = false; st.done = false; st.round = {know:0, learn:0};
 }
 
 /* Pose images: uses images/<name>.png|jpg|jpeg|webp when present, otherwise the stick figure */
@@ -628,12 +632,7 @@ function renderStats(){
 
 function renderCards(){
   const main = $("#main");
-  if(!st.deck.length){
-    main.innerHTML = `<div class="empty"><p>You've marked every pose in this set as known.</p>
-      <button class="btn" id="showAll">Study all poses in this set</button></div>`;
-    $("#showAll").onclick=()=>{st.onlyLearning=false;$("#onlyLearning").checked=false;buildDeck();render();};
-    return;
-  }
+  if(st.done || !st.deck.length){ renderDone(); return; }
   preload(st.deck[st.idx+1]);
   const p = st.deck[st.idx], isKnown = st.known.has(keyOf(p));
   const front = st.dir==="pose"
@@ -658,7 +657,7 @@ function renderCards(){
       <button class="btn nav" id="prev" aria-label="Previous card" ${st.idx===0?"disabled":""}>‹</button>
       <button class="btn learn" id="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Still learning<span class="bk" aria-hidden="true">1</span></button>
       <button class="btn know" id="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Got it<span class="bk" aria-hidden="true">2</span></button>
-      <button class="btn nav" id="next" aria-label="Next card" ${st.idx>=st.deck.length-1?"disabled":""}>›</button>
+      <button class="btn nav" id="next" aria-label="Next card">›</button>
     </div>
     <div class="progress"><span>Card ${st.idx+1} of ${st.deck.length}</span><span>${pct}%</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
@@ -681,12 +680,34 @@ function attachSwipe(el){
     if(Math.abs(dx)>10 && Math.abs(dx)>Math.abs(e.clientY-y0)){ el.classList.add("dragging"); el.style.transform=`translateX(${dx}px) rotate(${dx/30}deg)`; } });
   const end=()=>{ if(x0===null) return; x0=null; el.classList.remove("dragging"); el.style.transform="";
     if(Math.abs(dx)>70){ swiped=true; setTimeout(()=>swiped=false,350);
-      const d = dx<0 ? 1 : -1; if((d>0 && st.idx<st.deck.length-1)||(d<0 && st.idx>0)) go(d); } };
+      const d = dx<0 ? 1 : -1; if(d>0 || st.idx>0) go(d); } };
   el.addEventListener("pointerup",end); el.addEventListener("pointercancel",end);
 }
 function flip(){st.flipped=!st.flipped; st.nudge=false; $(".flipchip.nudge")?.classList.remove("nudge"); const c=$("#card"); if(c){c.classList.toggle("flipped",st.flipped);
   c.querySelector(".front").setAttribute("aria-hidden",st.flipped); c.querySelector(".back").setAttribute("aria-hidden",!st.flipped);}}
-function go(d){const n=st.idx+d; if(n<0||n>=st.deck.length||busy) return; st.idx=n; st.flipped=false; st.enter=d>0?"next":"prev"; renderCards();}
+function go(d){
+  if(busy) return;
+  const n=st.idx+d; if(n<0) return;
+  if(n>=st.deck.length){ st.done=true; st.enter="next"; renderCards(); return; }
+  st.idx=n; st.flipped=false; st.enter=d>0?"next":"prev"; renderCards();
+}
+/* End of the deck: summary plus a one-tap way to loop back through the still-learning pile */
+function renderDone(){
+  const all = pool(), learning = all.filter(p=>!st.known.has(keyOf(p))).length;
+  const r = st.round || {know:0, learn:0};
+  const title = learning===0 ? "You know every pose in this set 🎉" : "Round complete";
+  const summary = (r.know+r.learn) ? `<p>This round: <b>${r.know}</b> got it · <b>${r.learn}</b> still learning</p>` : "";
+  const pile = learning ? `<p class="muted">${learning} of ${all.length} poses in your still-learning pile</p>` : `<p class="muted">All ${all.length} poses marked as known.</p>`;
+  $("#main").innerHTML = `<div class="empty done-card">
+    <p class="done-title">${title}</p>${summary}${pile}
+    <div class="done-actions">
+      ${learning ? `<button class="btn learn" id="againLearning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Review the ${learning} I'm still learning</button>` : ""}
+      <button class="btn" id="restartAll">Start over with all ${all.length}</button>
+    </div></div>`;
+  const again = $("#againLearning");
+  if(again){ again.onclick=()=>{ st.onlyLearning=true; $("#onlyLearning").checked=true; buildDeck(); st.enter="next"; render(); }; again.focus(); }
+  $("#restartAll").onclick=()=>{ st.onlyLearning=false; $("#onlyLearning").checked=false; buildDeck(); st.enter="next"; render(); };
+}
 function mark(known){
   if(busy || !st.deck.length) return;
   const lift=$("#lift"), reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -697,13 +718,14 @@ function mark(known){
 function applyMark(known){
   const p = st.deck[st.idx];
   known ? st.known.add(keyOf(p)) : st.known.delete(keyOf(p));
+  if(st.round) st.round[known?"know":"learn"]++;
   save(); renderStats();
   if(st.onlyLearning && known){
     st.deck.splice(st.idx,1);
-    if(st.idx>=st.deck.length) st.idx=Math.max(0,st.deck.length-1);
+    if(st.idx>=st.deck.length) st.done=true;
     st.flipped=false; st.enter="next"; renderCards(); return;
   }
-  if(st.idx<st.deck.length-1){st.idx++; st.flipped=false;}
+  if(st.idx<st.deck.length-1){st.idx++; st.flipped=false;} else st.done=true;
   st.enter="next"; renderCards();
 }
 
@@ -786,7 +808,7 @@ $("#reset").onclick=()=>{
 document.addEventListener("keydown",e=>{
   if(e.target.tagName==="INPUT"||e.metaKey||e.ctrlKey||e.altKey) return;
   if(st.mode==="cards"){
-    if(!st.deck.length) return;
+    if(!st.deck.length||st.done) return;
     if(e.key===" "){e.preventDefault(); flip();}
     else if(e.key==="ArrowRight") go(1);
     else if(e.key==="ArrowLeft") go(-1);
