@@ -119,6 +119,11 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,6vw,2.75rem);li
 .btn.learn{background:var(--plum-soft);color:var(--plum);box-shadow:0 4px 0 color-mix(in srgb,var(--plum) 45%,transparent)}
 .btn.know{background:var(--sage-soft);color:var(--sage);box-shadow:0 4px 0 color-mix(in srgb,var(--sage) 45%,transparent)}
 .btn.learn svg,.btn.know svg{width:19px;height:19px;flex:none;transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.btn .count{display:inline-block;min-width:1.9em;padding:2px 8px;border-radius:999px;font-size:.85rem;font-weight:600;line-height:1.3;
+  font-variant-numeric:tabular-nums;background:color-mix(in srgb,currentColor 16%,transparent);transition:background .16s}
+.btn .count.bump{animation:bump .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.btn .count.bump{animation:none}}
 .btn .bk{font-size:.72rem;font-weight:500;border:1px solid currentColor;border-radius:5px;padding:0 5px;opacity:.55;margin-left:2px}
 @media (hover:hover){
   .btn.learn:hover{background:var(--plum);color:var(--surface);transform:translateY(-3px);box-shadow:0 7px 0 color-mix(in srgb,var(--plum) 55%,#000 20%)}
@@ -517,7 +522,7 @@ const ASH_RAW = [
  ["Advanced A","Ganda Bherundasana","","Gaṇḍa Bheruṇḍāsana","Formidable Face Pose",[["gaṇḍa","cheek, side of the face"],["bheruṇḍa","formidable; a mythical bird"]]],
  ["Advanced A","Hanumanasana","","Hanumānāsana","Splits (Monkey God Pose)",[["hanumān","the monkey god"]]],
  ["Advanced A","Supta Trivikramasana","","Supta Trivikramāsana","Reclining Trivikrama (Vishnu's Three Strides)",[R_.supta,["trivikrama","Vishnu taking three strides"]]],
- ["Advanced A","Dighasana","A–B","Dighāsana","Dighasana (Warrior III–like)",[["dig","direction; meaning debated"]],"Virabhadrasana III"],
+ ["Advanced A","Digasana","A–B","Digāsana","Digasana (Warrior III–like)",[["dig","direction; meaning debated"]],"Virabhadrasana III"],
  ["Advanced A","Trivikramasana","","Trivikramāsana","Standing Splits (Vishnu's Three Strides)",[["trivikrama","Vishnu taking three strides"]]],
  ["Advanced A","Natarajasana","","Naṭarājāsana","Dancer Pose (Lord of the Dance)",[["naṭa","dancer"],["rāja","king"]]],
  ["Advanced A","Raja Kapotasana","","Rāja Kapotāsana","King Pigeon",[R_.raja,R_.kapota]],
@@ -655,14 +660,14 @@ function renderCards(){
     </div>
     <div class="actions">
       <button class="btn nav" id="prev" aria-label="Previous card" ${st.idx===0?"disabled":""}>‹</button>
-      <button class="btn learn" id="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Still learning<span class="bk" aria-hidden="true">1</span></button>
-      <button class="btn know" id="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Got it<span class="bk" aria-hidden="true">2</span></button>
+      <button class="btn learn" id="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Still learning<span class="count${st.bump==="learn"?" bump":""}" title="Marked still learning this round">${(st.round||{}).learn||0}</span></button>
+      <button class="btn know" id="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>Got it<span class="count${st.bump==="know"?" bump":""}" title="Marked got it this round">${(st.round||{}).know||0}</span></button>
       <button class="btn nav" id="next" aria-label="Next card">›</button>
     </div>
     <div class="progress"><span>Card ${st.idx+1} of ${st.deck.length}</span><span>${pct}%</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
     <p class="keys"><span class="key-tip"><kbd>Space</kbd> flip &nbsp; <kbd>←</kbd><kbd>→</kbd> move &nbsp; <kbd>1</kbd> still learning &nbsp; <kbd>2</kbd> got it</span><span class="swipe-tip">Swipe the card left or right to move between poses</span></p>`;
-  st.enter = null;
+  st.enter = null; st.bump = null;
   $("#card").onclick = ()=>{ if(swiped){swiped=false;return;} flip(); };
   attachSwipe($("#lift"));
   $("#prev").onclick = ()=>go(-1);
@@ -718,7 +723,7 @@ function mark(known){
 function applyMark(known){
   const p = st.deck[st.idx];
   known ? st.known.add(keyOf(p)) : st.known.delete(keyOf(p));
-  if(st.round) st.round[known?"know":"learn"]++;
+  if(st.round){ st.round[known?"know":"learn"]++; st.bump = known?"know":"learn"; }
   save(); renderStats();
   if(st.onlyLearning && known){
     st.deck.splice(st.idx,1);
